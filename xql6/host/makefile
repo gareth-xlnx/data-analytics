@@ -1,10 +1,8 @@
-XILINX_SDX=/proj/xbuilds/2017.1_sdx_1026_1/installs/lin64/SDx/2017.1/
-#XILINX_SDX=/opt/Xilinx/SDx/2017.1.rte/
 CC = gcc
 PG_SERVER_INCS += -I $(shell pg_config --includedir) -I $(shell pg_config --includedir-server)
-CFLAGS += -O3 -fpic $(PG_SERVER_INCS)  -I${XILINX_SDX}/runtime/include/1_2
+CFLAGS += -O3 -fpic $(PG_SERVER_INCS)  -I${XILINX_XRT}/include
 
-LDFLAGS = -O3 -shared -L${XILINX_SDX}/runtime/lib/x86_64 -L${XILINX_SDX}/lib/lnx64.o  -Wl,-rpath,${XILINX_SDX}/lib/lnx64.o -lrt -lm -ldl -lxilinxopencl -lz
+LDFLAGS = -O3 -shared -L${XILINX_XRT}/lib -L${XILINX_SDX}/lib/lnx64.o  -Wl,-rpath,${XILINX_SDX}/lib/lnx64.o -lrt -lm -ldl -lxilinxopencl -lz
 
 TARGET = xql6.so
 SOURCES1 = xql6.c q6_swemu.c fpga_q6.c
@@ -13,11 +11,19 @@ OBJECTS1 = $(SOURCES1:.c=.o)
 
 all: $(TARGET)
 
-$(TARGET): $(OBJECTS1)
+$(TARGET): check-env $(OBJECTS1)
 	$(CC) $(OBJECTS1) -o $(TARGET) $(LDFLAGS) 
 
 clean:
 	$(RM) $(OBJECTS1) $(TARGET)
+
+check-env:
+ifndef XILINX_SDX
+	$(error XILINX_SDX is not defined)
+endif
+ifndef XILINX_XRT
+	$(error XILINX_XRT is not defined)
+endif
 
 # sudo make install
 install: $(TARGET)

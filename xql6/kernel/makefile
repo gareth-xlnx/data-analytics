@@ -1,13 +1,13 @@
 KERNEL = fpga_q6
 
-XDEVICE=xilinx:aws-vu9p-f1:4ddr-xpr-2pr:4.0
+PLATFORM=xilinx_vcu1525_dynamic_5_1
 DEVICE_REPO_OPT=
 
 KEEP_TEMP=1
 KERNEL_DEBUG=1
 CC = g++
 CLCC = xocc
-CLCC_OPT =  -t ${FLOW} --include ./ -s --xdevice ${XDEVICE} ${DEVICE_REPO_OPT} --xp param:compiler.enableAutoPipelining=false -O0
+CLCC_OPT =  -t ${FLOW} --include ./ -s --platform ${PLATFORM} ${DEVICE_REPO_OPT} --xp param:compiler.enableAutoPipelining=false -O0
 KERNEL_OBJ = ${KERNEL}.xo
 
 XCLBIN = ${KERNEL}.xclbin
