@@ -1,5 +1,6 @@
 CC = gcc
 PG_SERVER_INCS += -I $(shell pg_config --includedir) -I $(shell pg_config --includedir-server)
+PG_SERVER_PKGLIBDIR = $(shell pg_config --pkglibdir)
 CFLAGS += -O3 -fpic $(PG_SERVER_INCS)  -I${XILINX_XRT}/include
 
 LDFLAGS = -O3 -shared -L${XILINX_XRT}/lib -L${XILINX_SDX}/lib/lnx64.o  -Wl,-rpath,${XILINX_SDX}/lib/lnx64.o -lrt -lm -ldl -lxilinxopencl -lz
@@ -27,5 +28,5 @@ endif
 
 # sudo make install
 install: $(TARGET)
-	cp $(TARGET) /usr/lib/postgresql/9.6/lib/.
+	cp $(TARGET) $(PG_SERVER_PKGLIBDIR)
 
